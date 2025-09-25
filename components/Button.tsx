@@ -1,3 +1,4 @@
+
 import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { colors } from '../styles/commonStyles';
 
@@ -6,12 +7,28 @@ interface ButtonProps {
   onPress: () => void;
   style?: ViewStyle | ViewStyle[];
   textStyle?: TextStyle;
+  disabled?: boolean;
 }
 
-export default function Button({ text, onPress, style, textStyle }: ButtonProps) {
+export default function Button({ text, onPress, style, textStyle, disabled = false }: ButtonProps) {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} activeOpacity={0.7}>
-      <Text style={[styles.buttonText, textStyle]}>{text}</Text>
+    <TouchableOpacity 
+      style={[
+        styles.button, 
+        style,
+        disabled && styles.disabledButton
+      ]} 
+      onPress={onPress} 
+      activeOpacity={0.7}
+      disabled={disabled}
+    >
+      <Text style={[
+        styles.buttonText, 
+        textStyle,
+        disabled && styles.disabledText
+      ]}>
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -29,9 +46,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  disabledButton: {
+    backgroundColor: colors.grey,
+    opacity: 0.6,
+  },
+  disabledText: {
+    color: '#FFFFFF',
+    opacity: 0.8,
   },
 });
