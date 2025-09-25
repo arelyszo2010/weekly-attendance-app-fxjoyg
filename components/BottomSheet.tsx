@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,17 +26,7 @@ export default function SimpleBottomSheet({ children, isVisible = false, onClose
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    if (isVisible) {
-      setVisible(true);
-      snapToPoint(300); // Open to half height
-    } else {
-      snapToPoint(0); // Close
-      setTimeout(() => setVisible(false), 300);
-    }
-  }, [isVisible]);
-
-  const snapToPoint = (point: number) => {
+  const snapToPoint = useCallback((point: number) => {
     const toValue = point === 0 ? SCREEN_HEIGHT : SCREEN_HEIGHT - point;
     
     Animated.parallel([
@@ -56,7 +46,17 @@ export default function SimpleBottomSheet({ children, isVisible = false, onClose
         onClose();
       }
     });
-  };
+  }, [translateY, backdropOpacity, onClose]);
+
+  useEffect(() => {
+    if (isVisible) {
+      setVisible(true);
+      snapToPoint(300); // Open to half height
+    } else {
+      snapToPoint(0); // Close
+      setTimeout(() => setVisible(false), 300);
+    }
+  }, [isVisible, snapToPoint]);
 
   const handleBackdropPress = () => {
     snapToPoint(0);

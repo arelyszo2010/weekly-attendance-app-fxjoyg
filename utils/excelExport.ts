@@ -91,12 +91,12 @@ export async function generateExcelReport(attendance: AttendanceRecord[]): Promi
     // Generate Excel file
     const excelBuffer = XLSX.write(workbook, { type: 'base64', bookType: 'xlsx' });
     
-    // Save to file system
+    // Save to file system - using cacheDirectory instead of documentDirectory
     const fileName = `attendance_report_${startOfWeek.toISOString().split('T')[0]}.xlsx`;
-    const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+    const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
     
     await FileSystem.writeAsStringAsync(fileUri, excelBuffer, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: 'base64',
     });
 
     console.log('Excel file created at:', fileUri);
