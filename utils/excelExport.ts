@@ -1,6 +1,6 @@
 
 import * as XLSX from 'xlsx';
-import * as FileSystem from 'expo-file-system';
+import { cacheDirectory, writeAsStringAsync } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as MailComposer from 'expo-mail-composer';
 import { AttendanceRecord, WeeklyReport } from '../types/attendance';
@@ -91,11 +91,11 @@ export async function generateExcelReport(attendance: AttendanceRecord[]): Promi
     // Generate Excel file
     const excelBuffer = XLSX.write(workbook, { type: 'base64', bookType: 'xlsx' });
     
-    // Save to file system - using cacheDirectory instead of documentDirectory
+    // Save to file system - using cacheDirectory property directly
     const fileName = `attendance_report_${startOfWeek.toISOString().split('T')[0]}.xlsx`;
-    const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+    const fileUri = `${cacheDirectory}${fileName}`;
     
-    await FileSystem.writeAsStringAsync(fileUri, excelBuffer, {
+    await writeAsStringAsync(fileUri, excelBuffer, {
       encoding: 'base64',
     });
 
